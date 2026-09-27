@@ -1,4 +1,4 @@
-# z-cam-surveillance
+# z-web-RTSP-player
 
 Visionneuse web légère pour afficher en direct le flux d’une caméra RTSP.
 Le serveur Python utilise FFmpeg pour convertir la vidéo en MJPEG, un format
@@ -24,8 +24,8 @@ sudo apt install python3 ffmpeg
 Récupérez le dépôt sur le serveur qui pourra joindre la caméra :
 
 ```bash
-git clone <URL_DU_DEPOT> z-cam-surveillance
-cd z-cam-surveillance
+git clone <URL_DU_DEPOT> z-web-RTSP-player
+cd z-web-RTSP-player
 ```
 
 Le script `start.sh` ne dépend pas du répertoire courant. Il vérifie Python,
