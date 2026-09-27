@@ -60,6 +60,14 @@ Le serveur est créé avec `ThreadingHTTPServer`. Les requêtes HTTP peuvent
 ainsi être traitées dans des threads distincts. L’état partagé de la caméra
 est protégé par `_camera_lock`.
 
+### `start.sh` — lancement en arrière-plan
+
+Le script vérifie Python 3.10+, FFmpeg et la présence des fichiers applicatifs,
+puis démarre `app.py` avec `nohup` en arrière-plan. Il conserve le PID et les
+journaux dans `.runtime/`, réutilise le PID pour `status` et `stop`, et permet
+les commandes `start`, `stop`, `restart` et `status`. Le répertoire `.runtime/`
+est ignoré par Git.
+
 ### `index.html` — interface et comportement navigateur
 
 La page contient le HTML, le CSS et le JavaScript dans un fichier unique.
@@ -131,14 +139,19 @@ de remplacer ces valeurs :
 HOST=127.0.0.1 PORT=8090 python3 app.py
 ```
 
-Démarrage par défaut :
+Démarrage recommandé en arrière-plan :
 
 ```bash
-python3 app.py
+./start.sh
+./start.sh status
+./start.sh stop
 ```
 
-Puis ouvrir `http://127.0.0.1:8089` sur la machine serveur, ou utiliser son
-adresse IP depuis un appareil autorisé sur le réseau local.
+`HOST` et `PORT` peuvent être définis avant le lancement du script. Le
+serveur peut aussi être lancé directement au premier plan avec
+`python3 app.py`. Ouvrir ensuite `http://127.0.0.1:8089` sur la machine
+serveur, ou utiliser son adresse IP depuis un appareil autorisé sur le réseau
+local.
 
 ## 5. Routes HTTP
 

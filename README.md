@@ -29,7 +29,8 @@ cd z-cam-surveillance
 ```
 
 Le script `start.sh` ne dépend pas du répertoire courant. Il vérifie Python,
-sa version, FFmpeg et les fichiers nécessaires, puis démarre l’application.
+sa version, FFmpeg et les fichiers nécessaires, puis démarre l’application
+en arrière-plan :
 
 ```bash
 ./start.sh
@@ -41,7 +42,19 @@ Si le bit d’exécution n’est pas conservé lors du transfert, utilisez :
 bash start.sh
 ```
 
-Le processus reste au premier plan. Arrêtez-le avec `Ctrl+C`.
+Les commandes de gestion utilisent le même script :
+
+```bash
+./start.sh status   # vérifier si le serveur tourne
+./start.sh stop     # arrêter le serveur
+./start.sh restart  # le redémarrer
+```
+
+Le PID et le journal sont stockés dans `.runtime/`. Pour suivre les logs :
+
+```bash
+tail -f .runtime/server.log
+```
 
 ## Adresse et port
 

@@ -1,0 +1,12 @@
+Je veux que tu fasses une petit web appli en python qui affiche le contenu d'une caméra RTSP en temps réel sur un browser.
+
+L'appli web quand elle démarre, demande l'url de la caméra sous cette forme:
+
+rtsp://admin:[PASSWORD]@[IP_CAMERA]:554/user=admin_password=[PASSWORD]_channel=1_stream=0.sdp
+
+Le serveur en python doit tourner sur 0.0.0.0:8089
+
+Je veux que tu testes l'appli en vrai en utilisant ton browser headless chromium/playwrite et sauvegarde tous les screenshots (et garde l'historique de progression) que tu auras fait dans le dossier screenshots dans CE projet préfixés avec la date yymmdd.hhmmss
+
+# IMPORTANT:
+Vérifies qu'aucun passwords RTSP ne se retrouvent dans les copies d'écran et/ou commits !
