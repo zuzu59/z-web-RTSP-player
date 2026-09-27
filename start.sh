@@ -26,11 +26,19 @@ valid_pid() {
   [[ "${1:-}" =~ ^[1-9][0-9]*$ ]]
 }
 
-process_matches() {
+process_is_app() {
   local pid="$1"
   local command_line
   valid_pid "$pid" || return 1
   kill -0 "$pid" 2>/dev/null || return 1
+  command_line="$(ps -p "$pid" -o args= 2>/dev/null || true)"
+  [[ "$command_line" == *"/app.py" ]]
+}
+
+process_matches() {
+  local pid="$1"
+  process_is_app "$pid" || return 1
+  local command_line
   command_line="$(ps -p "$pid" -o args= 2>/dev/null || true)"
   [[ "$command_line" == *"$PROJECT_DIR/app.py"* ]]
 }
@@ -66,11 +74,27 @@ start_server() {
     return 1
   fi
 
-  if pid="$(stored_pid)" && process_matches "$pid"; then
-    printf 'Le serveur tourne déjà (PID %s) sur http://%s:%s\n' \
-      "$pid" "$HOST" "$PORT"
-    printf 'Journal : %s\n' "$LOG_FILE"
-    return 0
+  if pid="$(stored_pid)"; then
+    if process_matches "$pid"; then
+      printf 'Le serveur tourne déjà (PID %s) sur http://%s:%s\n' \
+        "$pid" "$HOST" "$PORT"
+      printf 'Journal : %s\n' "$LOG_FILE"
+      return 0
+    elif process_is_app "$pid"; then
+      printf 'Arrêt de l’ancienne instance (PID %s) après déplacement du dépôt.\n' \
+        "$pid"
+      kill -TERM "$pid"
+      for _ in {1..25}; do
+        if ! kill -0 "$pid" 2>/dev/null; then
+          break
+        fi
+        sleep 0.2
+      done
+      if kill -0 "$pid" 2>/dev/null; then
+        printf 'Erreur : l’ancienne instance ne s’est pas arrêtée.\n' >&2
+        return 1
+      fi
+    fi
   fi
 
   umask 077
@@ -106,7 +130,7 @@ stop_server() {
     return 0
   fi
 
-  if ! process_matches "$pid"; then
+  if ! process_is_app "$pid"; then
     rm -f "$PID_FILE"
     printf 'Le serveur ne tourne pas; ancien fichier PID supprimé.\n'
     return 0
